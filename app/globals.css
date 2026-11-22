@@ -1,37 +1,150 @@
 @import "tailwindcss";
 
+/* ---- Theme tokens: natural, cartoon ---- */
 :root {
-  --navy: #0b1030;
-  --navy-2: #131a4a;
-  --pink: #ff2e93;
-  --yellow: #ffe600;
-  --foreground: #f4f5ff;
+  --canvas: #f4efe6;
+  --cream: #fbf8f1;
+  --ink: #2b2b2b; /* charcoal: text + outlines */
+  --forest: #2f5d3a; /* primary */
+  --leaf: #5b9a5b;
+  --sage: #cfe0c8; /* soft fills */
+  --mist: #e3eedb; /* pale-green page background (basket, sell, profile) */
+  --stone: #8a877e; /* warm grey */
+  --mustard: #e9b949; /* highlights */
+  --coral: #e8745a; /* sparing accent */
+  --shadow-pop: 3px 3px 0 var(--ink);
 }
 
 @theme inline {
-  --color-navy: var(--navy);
-  --color-navy-2: var(--navy-2);
-  --color-pink: var(--pink);
-  --color-yellow: var(--yellow);
-  --font-sans: var(--font-geist-sans);
+  --color-canvas: var(--canvas);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-leaf: var(--leaf);
+  --color-sage: var(--sage);
+  --color-mist: var(--mist);
+  --color-stone: var(--stone);
+  --color-mustard: var(--mustard);
+  --color-coral: var(--coral);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-heading);
+  --shadow-pop: 3px 3px 0 var(--ink);
+  --shadow-pop-sm: 2px 2px 0 var(--ink);
 }
 
 body {
-  background:
-    radial-gradient(60rem 30rem at 85% -10%, rgba(255, 46, 147, 0.18), transparent 60%),
-    radial-gradient(50rem 30rem at -10% 10%, rgba(255, 230, 0, 0.08), transparent 60%),
-    var(--navy);
-  background-attachment: fixed;
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
 }
 
-@keyframes spin-slow {
-  to {
-    transform: rotate(360deg);
-  }
+h1, h2, h3, .font-display {
+  font-family: var(--font-heading), var(--font-body), system-ui, sans-serif;
 }
-.disco-spin {
+
+/* Chunky "sticker" lift on hover, used by cards and buttons */
+.pop {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.pop:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.pop:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ink);
+}
+
+::selection {
+  background: var(--mustard);
+  color: var(--ink);
+}
+
+@keyframes wave {
+  0%, 60%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(14deg); }
+  20%, 40% { transform: rotate(-8deg); }
+  50% { transform: rotate(10deg); }
+}
+.wave {
   display: inline-block;
-  animation: spin-slow 8s linear infinite;
+  transform-origin: 70% 70%;
+  animation: wave 2.4s ease-in-out 1;
+}
+
+/* ---- Map pins & popups (react-leaflet) ---- */
+.bop-pin-wrap {
+  background: none;
+  border: 0;
+}
+.bop-pin {
+  width: 38px;
+  height: 38px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: var(--pin);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.bop-pin span {
+  transform: rotate(45deg);
+  font-size: 18px;
+  line-height: 1;
+}
+.bop-pin-active {
+  transform: rotate(-45deg) scale(1.3);
+  box-shadow: 0 0 0 4px rgba(233, 185, 73, 0.6), 3px 3px 0 var(--ink);
+}
+.bop-popup .leaflet-popup-content-wrapper,
+.bop-popup .leaflet-popup-tip {
+  background: var(--cream);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.bop-popup .leaflet-popup-content-wrapper {
+  border-radius: 1.25rem;
+}
+.bop-popup .leaflet-popup-content {
+  margin: 10px;
+}
+.bop-popup a.leaflet-popup-close-button {
+  color: var(--ink);
+}
+.leaflet-tooltip.bop-walk {
+  background: var(--mustard);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  font-weight: 800;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.leaflet-tooltip.bop-walk::before {
+  display: none;
+}
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* ---- /plan transitions ---- */
+@keyframes shop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
+}
+.shop-in { animation: shop-in 0.45s ease-out backwards; }
+.pop-in { animation: pop-in 0.25s ease-out backwards; }
+@media (prefers-reduced-motion: reduce) {
+  .shop-in, .pop-in { animation: none; }
+}
+
+/* Soften OSM tiles toward the natural palette */
+.bop-tiles {
+  filter: saturate(0.55) sepia(0.2) brightness(1.03);
 }

@@ -1,0 +1,83 @@
+import Anthropic from "@anthropic-ai/sdk";
+import { BotReply, ChatMessage, WardrobeLite } from "./botTypes";
+import { parseBotReply } from "./botValidate";
+import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "./seed";
+
+export const LIVE_MODEL = "claude-haiku-5-5";
+
+function inventoryLine(l: Listing): string {
+  const d = distanceInfo(l);
+  const where = d
+    ? l.sellerType === "charity"
+      ? `charity shop (${l.sellerName}), ${d.walkMins} min walk, pick up today`
+      : `${l.college ?? "Oxford"}, ${d.walkMins} min walk, handover today`
+    : `${SOURCE_LABEL[l.source]}, delivery ${l.delivery ?? "2-4 days"}`;
+  return `${l.id} | ${l.title} | ${l.category} | ${l.theme} | size ${l.size} | ${formatPrice(l.swapOrPrice)} | ${l.external ? "EXTERNAL" : "LOCAL"} | ${where} | tags: ${l.tags.join(", ")}`;
+}
+
+function wardrobeLine(w: WardrobeLite): string {
+  return `${w.name} | ${w.category}${w.colour ? ` | ${w.colour}` : ""}${w.tags.length ? ` | tags: ${w.tags.join(", ")}` : ""}`;
+}
+
+export function buildSystemPrompt(inventory: Listing[], wardrobe: WardrobeLite[]): string {
+  return `You are BopBot, the outfit planner inside BopSwap, a student clothes swap app in Oxford where local items are handed over in person, the same day (no delivery). The user's default location is St Anne's College.
+
+TONE: friendly, brief, natural. Talk like a helpful friend, not a brand. No cringe, no slang overload, at most one emoji per message. Keep "message" under about 50 words.
+
+CONVERSATION FLOW:
+1. The user first names an event: reply with a short "message" (one or two sentences, do NOT list the looks in it) and 3-4 "directions": distinct outfit ideas the app shows as tappable cards. Each direction has an id (short kebab-case), a title (1-3 words), a vibe (one line, under 12 words), one emoji, and 3-5 pieces. Mark pieces the user already owns (see WARDROBE) as "have". Do NOT include "outfit" yet.
+2. The user taps a direction (message like "Let's go with Grunge") or refines ("more grunge, under £8"): confirm briefly in "message" and return "outfit": 4-6 pieces for that look, respecting any budget (swap items are free). Only return fresh "directions" if the refinement changes the ideas.
+3. Later messages: update "outfit" or answer briefly.
+
+PIECE STATUS:
+- "have": the user already owns it (it appears in WARDROBE). No listingId.
+- "local": a LOCAL inventory item matches. listingId required.
+- "external": only an EXTERNAL inventory item matches. listingId required.
+- "missing": nothing in the inventory matches. No listingId.
+ALWAYS prefer a LOCAL item over an EXTERNAL one. Use an EXTERNAL item only when no LOCAL item fits. Never use the same listingId twice within one direction or outfit. When you use local items, mention the walking distance of the closest one and that handover can be today. Never invent items or ids: only use ids from the inventory below.
+
+OUTPUT: reply with ONE JSON object and nothing else (no markdown, no code fences):
+{"message": string, "directions"?: [{"id": string, "title": string, "vibe": string, "emoji": string, "pieces": [{"piece": string, "status": "have"|"local"|"external"|"missing", "listingId"?: string}]}], "outfit"?: [{"piece": string, "status": "have"|"local"|"external"|"missing", "listingId"?: string}], "followUp"?: string}
+
+WARDROBE (what the user already owns: name | category | colour | tags):
+${wardrobe.length ? wardrobe.map(wardrobeLine).join("\n") : "(empty)"}
+
+INVENTORY (id | title | category | theme | size | price | LOCAL/EXTERNAL | where | tags):
+${inventory.map(inventoryLine).join("\n")}`;
+}
+
+/** Re-encode history so the model always sees its own turns as JSON (keeps it in format). */
+function toApiMessages(history: ChatMessage[]): Anthropic.MessageParam[] {
+  return history.map((m) => ({
+    role: m.role,
+    content:
+      m.role === "assistant"
+        ? JSON.stringify({ message: m.content, ...(m.directions ? { directions: m.directions } : {}), ...(m.outfit ? { outfit: m.outfit } : {}) })
+        : m.content,
+  }));
+}
+
+/** Calls Claude, validates, retries once if the JSON is invalid. Throws if both attempts fail. */
+export async function liveReply(history: ChatMessage[], inventory: Listing[], wardrobe: WardrobeLite[]): Promise<BotReply> {
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 25_000, maxRetries: 0 });
+  const system = buildSystemPrompt(inventory, wardrobe);
+  const messages = toApiMessages(history);
+
+  const ask = async (msgs: Anthropic.MessageParam[]) => {
+    const res = await client.messages.create({ model: LIVE_MODEL, max_tokens: 2000, system, messages: msgs });
+    return res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
+  };
+
+  const first = await ask(messages);
+  const parsed = parseBotReply(first, inventory);
+  if (parsed) return parsed;
+
+  const second = await ask([
+    ...messages,
+    { role: "assistant", content: first || "{}" },
+    { role: "user", content: "That was not valid. Reply again with ONLY the JSON object described in the instructions." },
+  ]);
+  const parsed2 = parseBotReply(second, inventory);
+  if (parsed2) return parsed2;
+  throw new Error("BopBot: model returned invalid JSON twice");
+}
