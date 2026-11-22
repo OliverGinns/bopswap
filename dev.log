@@ -317,3 +317,168 @@ See this log for the ancestor stack trace.
  GET / 200 in 21ms (next.js: 1.8ms, application-code: 19ms)
  GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 63ms (next.js: 18ms, application-code: 45ms)
  GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 53ms (next.js: 14ms, application-code: 39ms)
+ GET / 200 in 585ms (next.js: 104ms, application-code: 481ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 325ms (next.js: 127ms, application-code: 197ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 153ms (next.js: 47ms, application-code: 106ms)
+ GET /plan?q=Tropical+beach+party%2C+I%27m+on+a+budget 200 in 196ms (next.js: 15ms, application-code: 181ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 196ms (next.js: 68ms, application-code: 128ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 159ms (next.js: 42ms, application-code: 117ms)
+ POST /api/chat 200 in 47ms (next.js: 9ms, application-code: 38ms)
+ GET /plan?q=Tropical%20beach%20party%2C%20I%27m%20on%20a%20budget 200 in 148ms (next.js: 7ms, application-code: 141ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 179ms (next.js: 43ms, application-code: 137ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 260ms (next.js: 77ms, application-code: 183ms)
+ POST /api/chat 200 in 56ms (next.js: 8ms, application-code: 48ms)
+ GET /plan?q=Tropical+beach+party%2C+I%27m+on+a+budget 200 in 79ms (next.js: 4ms, application-code: 75ms)
+⨯ ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  [90m2 |[0m
+  [90m3 |[0m [90m// Config check for the browser. Never returns keys, only whether one is present.[0m
+[31m[1m>[0m [90m4 |[0m [36mexport[0m [36mconst[0m dynamic = [32m"force-dynamic"[0m;
+  [90m  |[0m              [31m[1m^^^^^^^[0m
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36masync[0m [36mfunction[0m [33mGET[0m() {
+  [90m7 |[0m   [36mconst[0m provider = resolveProvider();
+
+Ecmascript file had an error
+
+
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+○ Compiling /_error ...
+ GET /api/bot-status 500 in 4.5s (next.js: 3.8s, application-code: 641ms)
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+ POST /api/chat 500 in 83ms (next.js: 30ms, application-code: 53ms)
+[browser] ./app/api/bot-status/route.ts:4:14
+Error: Route segment config "dynamic" is not compatible with `nextConfig.cacheComponents`. Please remove it.
+  2 |
+  3 | // Config check for the browser. Never returns keys, only whether one is present.
+> 4 | export const dynamic = "force-dynamic";
+    |              ^^^^^^^
+  5 |
+  6 | export async function GET() {
+  7 |   const provider = resolveProvider();
+
+Ecmascript file had an error 
+ GET /api/bot-status 200 in 109ms (next.js: 78ms, application-code: 31ms)
+ POST /api/chat 200 in 30ms (next.js: 7ms, application-code: 24ms)
+ GET /plan?q=Tropical%20beach%20party%2C%20I%27m%20on%20a%20budget 200 in 124ms (next.js: 6ms, application-code: 118ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 197ms (next.js: 88ms, application-code: 110ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 153ms (next.js: 32ms, application-code: 121ms)
+ GET /plan?q=Tropical%20beach%20party%2C%20I%27m%20on%http://localhost:3000/api/bot-status20a%20budget 200 in 101ms (next.js: 6ms, application-code: 94ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 143ms (next.js: 31ms, application-code: 112ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 151ms (next.js: 42ms, application-code: 109ms)
+ GET /api/bot-status20a%20budget 404 in 127ms (next.js: 38ms, application-code: 89ms)
+ GET /api/bot-status20a%20budget 404 in 112ms (next.js: 30ms, application-code: 82ms)
+  Reload env: .env.local
+ GET /api/bot-status20a%20budget 404 in 272ms (next.js: 197ms, application-code: 75ms)
+ GET /api/bot-status20a%20budget 404 in 170ms (next.js: 22ms, application-code: 148ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/api/bot-s..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head>
+                  <__next_root_layout_boundary__>
+                    <SegmentViewNode type="layout" pagePath="layout.tsx">
+                      <SegmentTrieNode>
+                      <link>
+                      <script>
+                      <RootLayout>
+                        <html lang="en" className="fredoka_b9...">
+                          <body
+                            className="min-h-full flex flex-col"
+-                           data-new-gr-c-s-check-loaded="14.1167.0"
+-                           data-gr-ext-installed=""
+                          >
+                  ...
+ 
+ GET /api/bot-status 200 in 100ms (next.js: 71ms, application-code: 29ms)
+ POST /api/chat 200 in 2.3s (next.js: 228ms, application-code: 2.0s)
+ GET / 200 in 299ms (next.js: 47ms, application-code: 252ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 130ms (next.js: 29ms, application-code: 101ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 143ms (next.js: 31ms, application-code: 112ms)
+ GET /plan?q=tropical+party 200 in 140ms (next.js: 50ms, application-code: 90ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 133ms (next.js: 43ms, application-code: 90ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 112ms (next.js: 31ms, application-code: 81ms)
+ POST /api/chat 200 in 1955ms (next.js: 12ms, application-code: 1942ms)
+ POST /api/chat 200 in 796ms (next.js: 5ms, application-code: 791ms)
+ GET /plan?q=tropical+party 200 in 156ms (next.js: 14ms, application-code: 142ms)

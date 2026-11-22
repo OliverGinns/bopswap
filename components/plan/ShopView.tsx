@@ -19,7 +19,8 @@ import {
   tokenize,
 } from "@/lib/plan";
 import { addOffer, retractOffer } from "@/lib/offers";
-import { Listing, distanceInfo } from "@/lib/seed";
+import type { RefineFilter, RefineReply } from "@/lib/refine";
+import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "@/lib/seed";
 import type { WardrobeItem } from "@/lib/wardrobe";
 import HandoverModal from "../HandoverModal";
 import MapLoader from "../MapLoader";
@@ -35,6 +36,8 @@ interface Props {
   wardrobe: WardrobeItem[];
   budget?: number;
   msgs: UiMsg[];
+  /** The look the user picked (title, vibe, pieces), if known. */
+  look?: { title: string; vibe: string };
   onExchange: (user: string, bot: string) => void;
 }
 
@@ -48,7 +51,7 @@ const SORTS: { id: SortMode; label: string }[] = [
 type Modal = { kind: "handover"; l: Listing; slot: number } | { kind: "swap" | "offer"; l: Listing; slot: number } | null;
 
 /** Phase 2: outfit bar on top, scrolling feed + live map, sticky summary, docked BopBot. */
-export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, onExchange }: Props) {
+export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, look, onExchange }: Props) {
   const theme = useMemo(() => themeOf(pieces, byId), [pieces, byId]);
 
   const slots = useMemo(
@@ -71,12 +74,20 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
   const [modal, setModal] = useState<Modal>(null);
   const [toast, setToast] = useState<{ id: number; text: string } | null>(null);
   const [dockOpen, setDockOpen] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
+  // Live-bot output: a best-first order for one slot, plus per-listing reasons. Never required for the feed to work.
+  const [ranking, setRanking] = useState<{ slot: number; ids: string[] } | null>(null);
+  const [aiReasons, setAiReasons] = useState<Record<string, string>>({});
+  const dockRun = useRef(0);
 
   const feedRef = useRef<HTMLDivElement>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const pendingScroll = useRef<string | null>(null);
 
-  useEffect(() => () => clearTimeout(toastTimer.current), []);
+  useEffect(() => () => {
+    clearTimeout(toastTimer.current);
+    dockRun.current++;
+  }, []);
 
   const say = useCallback((text: string) => {
     clearTimeout(toastTimer.current);
@@ -84,7 +95,16 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
     toastTimer.current = setTimeout(() => setToast(null), 4200);
   }, []);
 
-  const visible = useMemo(() => slots.map((s) => applyFilters(s.cands, filters)), [slots, filters]);
+  const visible = useMemo(
+    () =>
+      slots.map((s, i) => {
+        const list = applyFilters(s.cands, filters);
+        if (!ranking || ranking.slot !== i || filters.sort !== "best") return list;
+        const pos = new Map(ranking.ids.map((id, k) => [id, k]));
+        return [...list].sort((a, b) => (pos.get(a.listing.id) ?? 1e6) - (pos.get(b.listing.id) ?? 1e6)); // stable: unranked keep their order
+      }),
+    [slots, filters, ranking]
+  );
   const feed = useMemo(() => visible[active] ?? [], [visible, active]);
   const slot = slots[active];
 
@@ -98,6 +118,11 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
   }, [feed]);
 
   const mapListings = useMemo(() => feed.map((c) => c.listing).filter((l) => !l.external), [feed]);
+
+  const clearAll = () => {
+    setFilters({ sort: "best" });
+    setRanking(null);
+  };
 
   const selectSlot = (i: number) => {
     setActive(i);
@@ -157,13 +182,8 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
     });
 
   // ----- dock chat -----
-  const dockSend = (text: string) => {
-    // Naming a piece ("show me the jeans") jumps to that slot.
-    const words = new Set(tokenize(text));
-    const named = slots.findIndex((s) => tokenize(s.piece.piece).some((t) => words.has(t)));
-    const target = named >= 0 ? named : active;
-    if (named >= 0 && named !== active) selectSlot(named);
-
+  /** Existing rule-based parser, unchanged. Also the fallback whenever the live bot is unavailable. */
+  const ruleSend = (text: string, named: number, target: number) => {
     const r = interpretRefinement(text, filters);
     if (!r) {
       onExchange(
@@ -175,12 +195,90 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
       return;
     }
     setFilters(r.filters);
+    setRanking(null);
     const list = applyFilters(slots[target].cands, r.filters);
     const piece = slots[target].piece.piece.toLowerCase();
     let tail = ` Showing ${list.length} for ${piece}.`;
     if (list.length === 0) tail = ` Nothing fits that for ${piece}, so try loosening it or say "reset".`;
     else if (r.filters.warm && !list.some((c) => isWarm(c.listing))) tail += " None of these are properly warm, so this is the best I've got.";
     onExchange(text, r.reply + tail);
+  };
+
+  /** Asks the live bot (/api/refine). Null on any failure or when no key is set. */
+  const askRefine = async (text: string, target: number): Promise<RefineReply | null> => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 14_000);
+    try {
+      const res = await fetch("/api/refine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        signal: ctrl.signal,
+        body: JSON.stringify({
+          message: text,
+          look: look ? { title: look.title, vibe: look.vibe, pieces: pieces.map((p) => p.piece) } : null,
+          activeSlot: slots[target].piece.piece,
+          listings: applyFilters(slots[target].cands, filters)
+            .slice(0, 40)
+            .map(({ listing: l }) => {
+              const d = distanceInfo(l);
+              return {
+                id: l.id,
+                title: l.title,
+                price: formatPrice(l.swapOrPrice),
+                distance: d ? `${d.walkMins} min walk` : "online, delivery",
+                source: l.external ? SOURCE_LABEL[l.source] : l.sellerType === "charity" ? "charity shop" : "student",
+              };
+            }),
+          currentFilter: {
+            maxPrice: filters.maxPrice,
+            sellerType: filters.only,
+            swapOnly: filters.swapOnly || undefined,
+            sortBy: filters.sort,
+          },
+          wardrobe: wardrobe.map(({ name, category, colour, tags }) => ({ name, category, colour, tags })),
+        }),
+      });
+      if (!res.ok) return null;
+      const data = (await res.json()) as RefineReply & { fallback?: boolean };
+      if (data.fallback || typeof data.message !== "string" || !data.message.trim()) return null;
+      return data;
+    } catch {
+      return null;
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  const dockSend = async (text: string) => {
+    if (busy) return;
+    // Naming a piece ("show me the jeans") jumps to that slot.
+    const words = new Set(tokenize(text));
+    const named = slots.findIndex((s) => tokenize(s.piece.piece).some((t) => words.has(t)));
+    const target = named >= 0 ? named : active;
+    if (named >= 0 && named !== active) selectSlot(named);
+
+    const run = ++dockRun.current;
+    setBusy(text);
+    let live: RefineReply | null = null;
+    try {
+      live = await askRefine(text, target);
+    } finally {
+      if (run === dockRun.current) setBusy(null);
+    }
+    if (run !== dockRun.current) return; // unmounted or superseded
+    if (!live) return ruleSend(text, named, target);
+
+    try {
+      if (live.filter) {
+        const f: RefineFilter = live.filter;
+        setFilters({ sort: f.sortBy ?? "best", maxPrice: f.maxPrice, only: f.sellerType, swapOnly: f.swapOnly });
+      }
+      setRanking(live.rankedListingIds ? { slot: target, ids: live.rankedListingIds } : live.filter ? null : ranking);
+      if (live.reasons) setAiReasons((prev) => ({ ...prev, ...live.reasons }));
+      onExchange(text, live.message);
+    } catch {
+      ruleSend(text, named, target);
+    }
   };
 
   // ----- summary -----
@@ -192,7 +290,7 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
   const allSorted = sortedCount === slots.length;
 
   const chips = filterChips(filters);
-  const ctxBase = { wardrobe, ownedForOutfit, theme };
+  const ctxBase = { wardrobe, ownedForOutfit, theme, look };
 
   return (
     <div className="shop-in flex h-full min-h-0 flex-col">
@@ -275,7 +373,7 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
                   {c.label} ✕
                 </button>
               ))}
-              <button onClick={() => setFilters({ sort: "best" })} className="text-xs font-bold text-forest hover:underline">
+              <button onClick={() => clearAll()} className="text-xs font-bold text-forest hover:underline">
                 Clear all
               </button>
             </div>
@@ -293,7 +391,7 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
                 <p className="mt-2 font-bold">Nothing matches that for {slot.piece.piece.toLowerCase()}</p>
                 <p className="text-sm text-stone">Loosen a filter, or ask BopBot for something different.</p>
                 <button
-                  onClick={() => setFilters({ sort: "best" })}
+                  onClick={() => clearAll()}
                   className="pop mt-3 rounded-full border-2 border-ink bg-mustard px-5 py-2 text-sm font-bold shadow-pop-sm"
                 >
                   Clear filters
@@ -305,7 +403,7 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
                   <ProductCard
                     key={l.id}
                     l={l}
-                    reason={reasonFor(l, { ...ctxBase, cheapestId, closestId })}
+                    reason={aiReasons[l.id] ?? reasonFor(l, { ...ctxBase, cheapestId, closestId })}
                     saved={saved.has(l.id)}
                     selected={selectedId === l.id}
                     chosen={choices[active]?.listingId === l.id ? choices[active] : undefined}
@@ -346,7 +444,7 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
           </div>
         )}
 
-        <DockChat open={dockOpen} onToggle={() => setDockOpen((o) => !o)} msgs={msgs} onSend={dockSend} />
+        <DockChat open={dockOpen} onToggle={() => setDockOpen((o) => !o)} msgs={msgs} pending={busy} onSend={dockSend} />
       </div>
 
       {/* Sticky summary */}

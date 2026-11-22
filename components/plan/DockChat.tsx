@@ -9,21 +9,23 @@ interface Props {
   open: boolean;
   onToggle: () => void;
   msgs: UiMsg[];
+  /** The user's message while BopBot is still working on it. */
+  pending?: string | null;
   onSend: (text: string) => void;
 }
 
 /** Docked "Ask BopBot": a small refinement chat that re-ranks / filters the feed. */
-export default function DockChat({ open, onToggle, msgs, onSend }: Props) {
+export default function DockChat({ open, onToggle, msgs, pending, onSend }: Props) {
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
   const recent = msgs.slice(-8);
 
   useEffect(() => {
     if (open) scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [open, msgs]);
+  }, [open, msgs, pending]);
 
   const submit = (t: string) => {
-    if (!t.trim()) return;
+    if (!t.trim() || pending) return;
     onSend(t.trim());
     setInput("");
   };
@@ -55,6 +57,14 @@ export default function DockChat({ open, onToggle, msgs, onSend }: Props) {
                 {m.text}
               </p>
             ))}
+            {pending && (
+              <>
+                <p className="ml-auto w-fit max-w-[90%] rounded-2xl rounded-br-md bg-forest px-3 py-2 text-cream">{pending}</p>
+                <p className="w-fit rounded-2xl rounded-bl-md bg-sage px-3 py-2 text-stone" aria-live="polite">
+                  BopBot is thinking…
+                </p>
+              </>
+            )}
           </div>
           <div className="space-y-2 border-t-2 border-ink p-2.5">
             <div className="flex flex-wrap gap-1.5">
@@ -83,7 +93,7 @@ export default function DockChat({ open, onToggle, msgs, onSend }: Props) {
               />
               <button
                 type="submit"
-                disabled={!input.trim()}
+                disabled={!input.trim() || !!pending}
                 className="rounded-full border-2 border-ink bg-mustard px-4 py-2 text-sm font-bold disabled:opacity-40"
               >
                 Ask

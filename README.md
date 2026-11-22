@@ -49,12 +49,22 @@ With no keys set, BopBot runs in **scripted** mode and uploaded listings are sav
 
 | Variable | Purpose |
 | --- | --- |
-| `ANTHROPIC_API_KEY` | Enables the optional live Claude BopBot mode (and AI autofill on Sell); not enabled or fully tested for the demo. Server-side only. |
-| `BOPBOT_MODE` | `live`, `scripted` or `auto` (default: live if a key is set, otherwise scripted). |
+| `GROQ_API_KEY` | Enables the optional live BopBot mode via Groq's OpenAI-compatible API (free key, see below). Server-side only. |
+| `GROQ_MODEL` | Groq model to use (default `openai/gpt-oss-120b`). |
+| `ANTHROPIC_API_KEY` | Enables live BopBot via Claude (`claude-haiku-5-5`) and AI photo autofill on Sell (autofill needs a vision model, so it is Anthropic-only). Server-side only. |
+| `BOPBOT_PROVIDER` | `groq` or `anthropic`. Default: `groq` if `GROQ_API_KEY` is set, otherwise `anthropic` if `ANTHROPIC_API_KEY` is set. |
+| `BOPBOT_MODE` | `live`, `scripted` or `auto` (default: live if a provider key is set, otherwise scripted). |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL, so listings are stored there instead of localStorage. |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key. |
 
 For Supabase, run [`supabase/schema.sql`](supabase/schema.sql) in the SQL editor.
+
+### Free live BopBot with Groq
+
+1. Sign up at [console.groq.com](https://console.groq.com) and create an API key (no card needed).
+2. Put it in `.env.local` as `GROQ_API_KEY=...` and restart `npm run dev`.
+
+The free tier is **rate-limited**. If Groq returns a 429 (or any error, timeout or invalid JSON twice), BopBot silently falls back to the scripted bot, so the UI never breaks. Keys stay on the server and are never sent to the browser.
 
 ## What's real vs sample data
 
@@ -63,12 +73,12 @@ Being upfront:
 - **Sample data:** the listings, the charity shops (**fictional names**, no real partnerships) and the external Vinted / Amazon / Facebook items are all seeded in [`lib/seed.ts`](lib/seed.ts).
 - **Simulated:** offers and handovers are not sent to anyone. There is no sign-in.
 - **Simple rules:** the refinement chat uses simple rules, not a model.
-- **BopBot:** in this deployed prototype, BopBot's replies are **scripted** so the demo is repeatable. A live Claude mode (`claude-haiku-5-5`, with a scripted fallback) is built into the code and is enabled by setting `ANTHROPIC_API_KEY`, but it was **not enabled or fully tested** for the hackathon demo.
+- **BopBot:** in this deployed prototype, BopBot's replies are **scripted** so the demo is repeatable. A live mode (Groq or Claude `claude-haiku-5-5`, with a scripted fallback) is built into the code and is enabled by setting `GROQ_API_KEY` or `ANTHROPIC_API_KEY`, but it was **not enabled or fully tested** for the hackathon demo.
 - **Real:** the app itself, the planner and wardrobe matching flow, the map, and listing uploads (localStorage, or Supabase if configured).
 
 ## Tech and AI tools
 
-Next.js (App Router, TypeScript), Tailwind CSS, Supabase, Leaflet + OpenStreetMap and Vercel. In the deployed prototype BopBot's replies are scripted so the demo is repeatable; an optional live Claude mode (`claude-haiku-5-5`, scripted fallback) is built in via `ANTHROPIC_API_KEY` but was not enabled or fully tested for the hackathon demo. **Claude Code** was used to build the project. Built during the hackathon.
+Next.js (App Router, TypeScript), Tailwind CSS, Supabase, Leaflet + OpenStreetMap and Vercel. In the deployed prototype BopBot's replies are scripted so the demo is repeatable; an optional live mode (Groq or Claude `claude-haiku-5-5`, scripted fallback) is built in via `GROQ_API_KEY` or `ANTHROPIC_API_KEY` but was not enabled or fully tested for the hackathon demo. **Claude Code** was used to build the project. Built during the hackathon.
 
 ## Roadmap
 

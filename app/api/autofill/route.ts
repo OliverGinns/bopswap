@@ -6,14 +6,19 @@ import { CATEGORIES, CONDITIONS, TAG_CHIPS } from "@/lib/userListings";
 // AI autofill for /sell. Live mode only (needs ANTHROPIC_API_KEY and BOPBOT_MODE != scripted).
 // GET tells the form whether to show the button; POST never throws, it just returns {error}.
 
+// Photo labelling needs a vision model, so it stays Anthropic-only (Groq's default model is text-only).
+function autofillAvailable() {
+  return resolveMode() === "live" && !!process.env.ANTHROPIC_API_KEY;
+}
+
 export async function GET() {
-  return Response.json({ available: resolveMode() === "live" });
+  return Response.json({ available: autofillAvailable() });
 }
 
 const MAX_B64 = 1_500_000; // ~1.1 MB of JPEG; the client sends a small preview
 
 export async function POST(req: Request) {
-  if (resolveMode() !== "live") return Response.json({ error: "AI autofill is only available in live mode" }, { status: 503 });
+  if (!autofillAvailable()) return Response.json({ error: "AI autofill is only available in live mode" }, { status: 503 });
   let image = "";
   try {
     const body = (await req.json()) as { image?: unknown };

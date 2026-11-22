@@ -2,7 +2,7 @@ import { BotReply, ChatMessage } from "@/lib/botTypes";
 import { resolveMode } from "@/lib/botMode";
 import { cleanDirections, cleanPieces, sanitizeWardrobe } from "@/lib/botValidate";
 import { buildInventory } from "@/lib/inventory";
-import { liveReply } from "@/lib/liveBot";
+import { LiveBotError, liveReply } from "@/lib/liveBot";
 import { scriptedReply } from "@/lib/scriptedBot";
 import type { Listing } from "@/lib/seed";
 
@@ -48,18 +48,26 @@ export async function POST(req: Request) {
 
   let mode = resolveMode();
   let reply: BotReply;
+  let reason: string | undefined;
 
   try {
     if (mode === "live") {
       try {
         reply = await liveReply(history, inventory, wardrobe);
       } catch (err) {
-        // Fail soft: never leave the UI hanging on camera.
-        console.warn("[BopBot] live mode failed, falling back to scripted:", err instanceof Error ? err.message : err);
+        // Fail soft: never leave the UI hanging on camera. Log the reason (never the key).
+        if (err instanceof LiveBotError) {
+          reason = err.reason;
+          console.warn(`[BopBot] live failed (provider=${err.provider} reason=${err.reason}), falling back to scripted: ${err.detail}`);
+        } else {
+          reason = "error";
+          console.warn("[BopBot] live failed, falling back to scripted:", err instanceof Error ? err.message : err);
+        }
         mode = "scripted";
         reply = scriptedReply(history, inventory, wardrobe);
       }
     } else {
+      reason = (process.env.BOPBOT_MODE ?? "").toLowerCase() === "scripted" ? "forced-scripted" : "no-key";
       reply = scriptedReply(history, inventory, wardrobe);
     }
   } catch (err) {
@@ -67,5 +75,5 @@ export async function POST(req: Request) {
     reply = { message: "Sorry, I tripped over my own feet there. Try that once more?" };
   }
 
-  return Response.json(reply, { headers: { "x-bopbot-mode": mode } });
+  return Response.json(reply, { headers: { "x-bopbot-mode": mode, ...(reason ? { "x-bopbot-reason": reason } : {}) } });
 }

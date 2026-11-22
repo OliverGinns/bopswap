@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { BotReply, ChatMessage, WardrobeLite } from "./botTypes";
+import { resolveProvider } from "./botMode";
 import { parseBotReply } from "./botValidate";
 import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "./seed";
 
@@ -47,7 +48,7 @@ ${inventory.map(inventoryLine).join("\n")}`;
 }
 
 /** Re-encode history so the model always sees its own turns as JSON (keeps it in format). */
-function toApiMessages(history: ChatMessage[]): Anthropic.MessageParam[] {
+function toApiMessages(history: ChatMessage[]): Msg[] {
   return history.map((m) => ({
     role: m.role,
     content:
@@ -57,16 +58,84 @@ function toApiMessages(history: ChatMessage[]): Anthropic.MessageParam[] {
   }));
 }
 
-/** Calls Claude, validates, retries once if the JSON is invalid. Throws if both attempts fail. */
-export async function liveReply(history: ChatMessage[], inventory: Listing[], wardrobe: WardrobeLite[]): Promise<BotReply> {
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: 25_000, maxRetries: 0 });
-  const system = buildSystemPrompt(inventory, wardrobe);
-  const messages = toApiMessages(history);
+type Msg = { role: "user" | "assistant"; content: string };
 
-  const ask = async (msgs: Anthropic.MessageParam[]) => {
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+export const GROQ_DEFAULT_MODEL = "openai/gpt-oss-120b";
+
+/** A live-bot failure with a short machine reason ("401", "429", "timeout", "invalid-json", "error") and a log-safe detail. */
+export class LiveBotError extends Error {
+  constructor(public reason: string, public provider: string, public detail: string) {
+    super(`${provider} ${reason}: ${detail}`);
+  }
+}
+
+function isTimeout(err: unknown): boolean {
+  const name = err instanceof Error ? err.name : "";
+  const msg = err instanceof Error ? err.message : "";
+  return name === "TimeoutError" || name === "AbortError" || name === "APIConnectionTimeoutError" || /timed? ?out/i.test(msg);
+}
+
+/** Strip anything key-shaped from text before it is logged or returned. */
+function scrub(s: string): string {
+  return s.replace(/(gsk_|sk-)[A-Za-z0-9_-]+/g, "[key]").replace(/\s+/g, " ").slice(0, 200);
+}
+
+async function askAnthropic(system: string, msgs: Msg[], timeoutMs = 25_000): Promise<string> {
+  try {
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY, timeout: timeoutMs, maxRetries: 0 });
     const res = await client.messages.create({ model: LIVE_MODEL, max_tokens: 2000, system, messages: msgs });
     return res.content.map((b) => (b.type === "text" ? b.text : "")).join("");
-  };
+  } catch (err) {
+    const status = (err as { status?: number }).status;
+    const msg = err instanceof Error ? err.message : String(err);
+    throw new LiveBotError(status ? String(status) : isTimeout(err) ? "timeout" : "error", "anthropic", scrub(msg));
+  }
+}
+
+async function askGroq(system: string, msgs: Msg[], timeoutMs = 25_000): Promise<string> {
+  const model = process.env.GROQ_MODEL || GROQ_DEFAULT_MODEL;
+  let res: Response;
+  try {
+    res = await fetch(GROQ_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.GROQ_API_KEY}` },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "system", content: system }, ...msgs],
+        max_tokens: 2000,
+        response_format: { type: "json_object" },
+        ...(model.includes("gpt-oss") ? { reasoning_effort: "low" } : {}),
+      }),
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  } catch (err) {
+    throw new LiveBotError(isTimeout(err) ? "timeout" : "error", "groq", scrub(err instanceof Error ? err.message : String(err)));
+  }
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new LiveBotError(String(res.status), "groq", scrub(`model=${model} ${body}`));
+  }
+  const data = (await res.json()) as { choices?: { message?: { content?: string | null } }[] };
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
+/** One raw JSON-contract call on the configured provider (shared by chat and refine). Throws LiveBotError. */
+export async function askLive(system: string, msgs: Msg[], timeoutMs = 25_000): Promise<{ text: string; provider: string }> {
+  const provider = resolveProvider();
+  if (!provider) throw new LiveBotError("no-key", "none", "no live provider configured");
+  const text = provider === "groq" ? await askGroq(system, msgs, timeoutMs) : await askAnthropic(system, msgs, timeoutMs);
+  return { text, provider };
+}
+
+/** Calls the configured provider, validates, retries once if the JSON is invalid. Throws on any failure (caller falls back to scripted). */
+export async function liveReply(history: ChatMessage[], inventory: Listing[], wardrobe: WardrobeLite[]): Promise<BotReply> {
+  const system = buildSystemPrompt(inventory, wardrobe);
+  const messages = toApiMessages(history);
+  const provider = resolveProvider();
+  if (!provider) throw new LiveBotError("no-key", "none", "no live provider configured");
+
+  const ask = (msgs: Msg[]) => (provider === "groq" ? askGroq(system, msgs) : askAnthropic(system, msgs));
 
   const first = await ask(messages);
   const parsed = parseBotReply(first, inventory);
@@ -79,5 +148,5 @@ export async function liveReply(history: ChatMessage[], inventory: Listing[], wa
   ]);
   const parsed2 = parseBotReply(second, inventory);
   if (parsed2) return parsed2;
-  throw new Error("BopBot: model returned invalid JSON twice");
+  throw new LiveBotError("invalid-json", provider, scrub(`model returned invalid JSON twice; last: ${second}`));
 }

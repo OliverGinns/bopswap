@@ -94,6 +94,13 @@ export default function PlanClient({ initialInput = "", themeId }: { initialInpu
     return undefined;
   }, [msgs]);
 
+  // The look the user chose, so shop-phase copy can name it ("Fits your Beachy Chill look").
+  const look = useMemo(() => {
+    const dirs = [...msgs].reverse().find((m) => m.directions)?.directions;
+    const d = selectedDirId ? dirs?.find((x) => x.id === selectedDirId) : undefined;
+    return d ? { title: d.title, vibe: d.vibe } : undefined;
+  }, [msgs, selectedDirId]);
+
   const planRef = useRef(planPieces);
   useEffect(() => {
     planRef.current = planPieces;
@@ -318,6 +325,7 @@ export default function PlanClient({ initialInput = "", themeId }: { initialInpu
                 wardrobe={wardrobe}
                 budget={budget}
                 msgs={msgs}
+                look={look}
                 onExchange={onExchange}
               />
             </div>

@@ -258,6 +258,8 @@ export interface ReasonCtx {
   cheapestId?: string;
   closestId?: string;
   theme: Theme;
+  /** The look the user chose; reasons name it instead of assuming a theme. */
+  look?: { title: string; vibe?: string };
 }
 
 /** One friendly line on why this item fits. Order: goes with something you own, then price/distance, then source. */
@@ -269,8 +271,8 @@ export function reasonFor(l: Listing, ctx: ReasonCtx): string {
     const shared = [...w.tags.flatMap(tokenize), ...tokenize(w.name)].filter((t) => mine.has(t) && !GENERIC_TAGS.has(t) && t !== "90s");
     if (shared.length) return `Goes with the ${w.name.toLowerCase()} you own`;
   }
-  const themeTag = l.theme === "90s" ? "90s" : "";
-  if (themeTag) {
+  // Only talk about the 90s when the chosen look is one.
+  if (l.theme === "90s" && /90/.test(`${ctx.look?.title ?? ""} ${ctx.look?.vibe ?? ""}`)) {
     const w = ctx.ownedForOutfit.find((x) => x.tags.includes("90s") && x.category !== l.category);
     if (w) return `Same 90s vibe as your ${w.name.toLowerCase()}`;
   }
@@ -280,7 +282,8 @@ export function reasonFor(l: Listing, ctx: ReasonCtx): string {
   if (l.sellerType === "charity" && l.shop) return `Charity find: ${l.shop.cause.charAt(0).toLowerCase()}${l.shop.cause.slice(1)}`;
   if (l.external) return "Only turns up online, so allow a few days for delivery";
   if (l.swapOrPrice === "swap") return "Open to a swap, so it could cost you nothing";
-  return `Fits the ${ctx.theme === "90s" ? "90s" : "fancy dress"} look, ${d ? `${d.walkMins} min walk` : "size " + l.size}`;
+  const lookName = ctx.look?.title ? `your ${ctx.look.title} look` : "your look";
+  return `Fits ${lookName}, ${d ? `${d.walkMins} min walk` : "size " + l.size}`;
 }
 
 export { priceOf, walkOf };
