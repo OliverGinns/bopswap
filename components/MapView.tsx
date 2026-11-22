@@ -7,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, Marker, Polyline, Popup, TileLayer, Tooltip, useMap } from "react-leaflet";
 import { DEFAULT_USER, Listing, PIN_COLOUR, distanceInfo, formatPrice } from "@/lib/seed";
 import HandoverModal from "./HandoverModal";
+import RatingBadge from "./RatingBadge";
 import { softFill } from "@/lib/theme";
 import { planRoute } from "@/lib/route";
 
@@ -99,7 +100,8 @@ export default function MapView({ listings, selectedId, onSelect, hoverId, empty
   const pins = useMemo(
     () =>
       listings
-        .filter((l) => !l.external && l.lat != null && l.lng != null)
+        // Only listings with real, finite coordinates get a pin (online / bad data are skipped, never thrown on).
+        .filter((l) => !!l && !l.external && Number.isFinite(l.lat) && Number.isFinite(l.lng))
         .map((l) => ({ l, pos: spread(l.id, l.lat!, l.lng!) })),
     [listings]
   );
@@ -116,15 +118,19 @@ export default function MapView({ listings, selectedId, onSelect, hoverId, empty
   // Basket mode: walking legs between consecutive stops, drawn on the (slightly spread) pin positions.
   const legs = useMemo(() => {
     if (!statusById) return [];
-    const posById = new Map(pins.map((p) => [p.l.id, p.pos]));
-    let from = YOU_POS;
-    return planRoute(pins.map((p) => p.l)).legs.flatMap((leg) => {
-      const to = posById.get(leg.to.id);
-      if (!to) return [];
-      const out = { id: leg.to.id, from, to, mins: leg.mins };
-      from = to;
-      return [out];
-    });
+    try {
+      const posById = new Map(pins.map((p) => [p.l.id, p.pos]));
+      let from = YOU_POS;
+      return planRoute(pins.map((p) => p.l)).legs.flatMap((leg) => {
+        const to = posById.get(leg.to.id);
+        if (!to) return [];
+        const out = { id: leg.to.id, from, to, mins: leg.mins };
+        from = to;
+        return [out];
+      });
+    } catch {
+      return []; // no route line is better than no map
+    }
   }, [pins, statusById]);
 
   return (
@@ -150,7 +156,7 @@ export default function MapView({ listings, selectedId, onSelect, hoverId, empty
           <Polyline
             key={leg.id}
             positions={[leg.from, leg.to]}
-            pathOptions={{ color: ROUTE_COLOUR[statusById?.[leg.id] ?? "accepted"], weight: 3, dashArray: "6 8", opacity: 0.95 }}
+            pathOptions={{ color: ROUTE_COLOUR[statusById?.[leg.id] ?? "accepted"] ?? ROUTE_COLOUR.accepted, weight: 3, dashArray: "6 8", opacity: 0.95 }}
           >
             {leg.mins > 0 && (
               <Tooltip permanent direction="center" className="bop-walk">
@@ -172,7 +178,11 @@ export default function MapView({ listings, selectedId, onSelect, hoverId, empty
             <Marker
               key={l.id}
               position={pos}
-              icon={pinIcon(l.imageEmoji, statusById?.[l.id] ? STATUS_COLOUR[statusById[l.id]] : PIN_COLOUR[l.sellerType], active)}
+              icon={pinIcon(
+                l.imageEmoji || "👚",
+                (statusById?.[l.id] && STATUS_COLOUR[statusById[l.id]]) || PIN_COLOUR[l.sellerType] || PIN_COLOUR.student,
+                active
+              )}
               zIndexOffset={active ? 1000 : 0}
               title={l.title}
               eventHandlers={{ click: () => onSelect(l.id) }}
@@ -230,6 +240,7 @@ function PopupCard({ l, onRequest, status }: { l: Listing; onRequest: () => void
       <p className="mt-0.5 text-xs text-ink/75">
         {charity ? `💚 ${l.sellerName}` : `📍 ${l.college}`} · {formatPrice(l.swapOrPrice)}
       </p>
+      <RatingBadge listing={l} className="mt-1" />
       {d && (
         <p className="text-xs text-ink/75">
           {d.label} away · 🚶 {d.walkMins} min

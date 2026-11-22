@@ -382,12 +382,15 @@ export default function ShopView({ pieces, all, byId, wardrobe, budget, msgs, on
         <HandoverModal
           listing={modal.l}
           onClose={() => setModal(null)}
-          onConfirm={({ offerId }) => {
+          onConfirm={({ offerId, kind }) => {
             const { l, slot: i } = modal;
             const prevOffer = choices[i]?.offerId;
             if (prevOffer && prevOffer !== offerId) retractOffer(prevOffer);
-            setChoices((prev) => ({ ...prev, [i]: { listingId: l.id, kind: "handover", cost: priceOf(l), label: "Handover booked", offerId } }));
-            say(`Handover requested with ${l.sellerName}.`);
+            setChoices((prev) => ({ ...prev, [i]: kind === "swap"
+                ? { listingId: l.id, kind: "swap", cost: 0, label: "Swap offered", offerId }
+                : { listingId: l.id, kind: "handover", cost: priceOf(l), label: "Handover booked", offerId },
+            }));
+            say(kind === "swap" ? `Swap requested with ${l.sellerName}.` : `Handover requested with ${l.sellerName}.`);
           }}
         />
       )}

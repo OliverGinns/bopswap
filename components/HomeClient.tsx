@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { THEMES } from "@/lib/directions";
+import { useChosenLook } from "@/lib/lookChoice";
+import { isActive, useOffers } from "@/lib/offers";
 import { distanceInfo } from "@/lib/seed";
 import { useListings } from "@/lib/useListings";
 import { useWardrobe } from "@/lib/useWardrobe";
@@ -16,6 +18,12 @@ export default function HomeClient() {
   const [text, setText] = useState("");
   const { items } = useWardrobe();
   const { all, user } = useListings();
+  const { offers } = useOffers();
+  const look = useChosenLook();
+  // Items lined up so far: active or completed offers (retracted ones don't count). An outfit is 5 pieces.
+  const lined = offers.filter((o) => o.status !== "retracted").length;
+  const showPlan = offers.some(isActive) || !!look;
+  const outfitSize = Math.max(5, lined);
 
   const fresh = useMemo(() => {
     const mine = new Set(user.map((l) => l.id));
@@ -93,18 +101,20 @@ export default function HomeClient() {
         </form>
       </section>
 
-      <section aria-label="Upcoming event" className="mb-4">
+      {showPlan && (
+      <section aria-label="Your outfit plan" className="mb-4">
         <Link href="/plan" className="pop flex items-center gap-3 rounded-2xl border-2 border-ink bg-mustard/60 p-3 shadow-pop">
           <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-ink bg-cream text-2xl">
             🪩
           </span>
           <span className="min-w-0 flex-1">
-            <span className="font-display block text-base font-semibold">College bop · Friday</span>
-            <span className="block text-xs font-semibold text-ink/75">Outfit 2/5 sorted. Pick up where you left off.</span>
+            <span className="font-display block text-base font-semibold">{look ? `${look} look` : "Your outfit plan"}</span>
+            <span className="block text-xs font-semibold text-ink/75">Outfit {lined}/{outfitSize} sorted. Pick up where you left off.</span>
           </span>
           <span className="font-display shrink-0 text-sm font-semibold text-forest">Continue →</span>
         </Link>
       </section>
+      )}
 
       <section aria-label="Your wardrobe" className="mb-6">
         <Link

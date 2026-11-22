@@ -4,17 +4,33 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Offer, TYPE_LABEL, gbp, offerDetail, retailEstimate, useOffers } from "@/lib/offers";
 import { useMyListings } from "@/lib/myListings";
+import { USER_RATING } from "@/lib/seed";
 import { softFill } from "@/lib/theme";
 import { useListings } from "@/lib/useListings";
 import { useWardrobe } from "@/lib/useWardrobe";
 import { DEMO_USER } from "@/lib/wardrobe";
 import MyListingsGrid from "./MyListingsGrid";
+import RatingBadge from "./RatingBadge";
 import WardrobeThumb from "./WardrobeThumb";
 
 // Plausible history for the demo user; live counts from offers are added on top.
 const BASE = { swaps: 12, listed: 4, parcels: 14, saved: 86 };
 const SINCE = "October 2026";
 const KG_PER_PARCEL = 0.5; // ASSUMPTION, labelled in the UI
+
+const REVIEW_TAGS = [
+  { tag: "On time", n: 11 },
+  { tag: "Friendly", n: 9 },
+  { tag: "Great condition", n: 7 },
+  { tag: "Easy swap", n: 5 },
+];
+
+// Fixed demo reviews.
+const REVIEWS = [
+  { who: "Maya P.", college: "Keble", stars: 5, text: "Turned up bang on time and the jacket was exactly as described. Easy swap!" },
+  { who: "Zara A.", college: "Somerville", stars: 5, text: "Super friendly, we sorted the handover outside the lodge in two minutes." },
+  { who: "Tom W.", college: "Balliol", stars: 4, text: "Great condition, a bit of a walk but worth it for the shell suit." },
+];
 
 const TABS = ["wardrobe", "listings", "offers"] as const;
 type Tab = (typeof TABS)[number];
@@ -60,6 +76,19 @@ export default function ProfileClient() {
           <h1 className="font-display text-3xl font-bold tracking-tight">{DEMO_USER}</h1>
           <p className="font-semibold text-ink/75">🎓 St Anne&apos;s College, Oxford</p>
           <p className="text-sm text-stone">Swapper since {SINCE}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
+            <RatingBadge rating={USER_RATING} className="px-2 py-0.5 text-xs" />
+            <span className="inline-flex items-center gap-1 rounded-full border border-ink bg-sage px-2 py-0.5 text-xs font-bold text-forest">
+              <span aria-hidden>✓</span> Verified student
+            </span>
+          </div>
+          <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Review tags">
+            {REVIEW_TAGS.map((t) => (
+              <li key={t.tag} className="rounded-full border border-ink bg-canvas px-2.5 py-0.5 text-xs font-semibold">
+                {t.tag} <span className="text-stone">×{t.n}</span>
+              </li>
+            ))}
+          </ul>
         </div>
         <dl className="grid w-full grid-cols-2 gap-3 sm:grid-cols-4 lg:w-auto lg:min-w-[520px]">
           <Stat label="Swaps done" value={String(stats.swaps)} />
@@ -140,6 +169,12 @@ export default function ProfileClient() {
                           <p className="truncate text-xs text-stone">
                             {TYPE_LABEL[o.type]} · {offerDetail(o, l, wardrobe.find((w) => w.id === o.swapWardrobeItemId))}
                           </p>
+                          {l && (
+                            <p className="mt-0.5 flex items-center gap-1.5 text-[11px] text-stone">
+                              <span className="truncate">{l.sellerName}</span>
+                              <RatingBadge listing={l} className="shrink-0" />
+                            </p>
+                          )}
                         </div>
                         <span className={`shrink-0 rounded-full border border-ink px-2 py-0.5 text-[11px] font-bold capitalize ${STATUS_CHIP[o.status]}`}>
                           {o.status}
@@ -160,6 +195,24 @@ export default function ProfileClient() {
               ≈ {(stats.parcels * KG_PER_PARCEL).toFixed(1)} kg of delivery CO₂ kept out of the air.
             </p>
             <p className="mt-2 text-[11px] text-ink/60">Assumption: ~{KG_PER_PARCEL} kg CO₂ per parcel. Not a measured figure.</p>
+          </div>
+          <div className="rounded-2xl border-2 border-ink bg-cream p-4 shadow-pop-sm">
+            <h2 className="font-display font-semibold">Recent reviews</h2>
+            <ul className="mt-2 space-y-3">
+              {REVIEWS.map((r) => (
+                <li key={r.who} className="text-sm">
+                  <p className="flex items-center justify-between gap-2 font-semibold">
+                    <span>
+                      {r.who} <span className="text-xs font-normal text-stone">· {r.college}</span>
+                    </span>
+                    <span className="text-xs" aria-label={`${r.stars} out of 5`}>
+                      {"⭐".repeat(r.stars)}
+                    </span>
+                  </p>
+                  <p className="text-ink/75">&ldquo;{r.text}&rdquo;</p>
+                </li>
+              ))}
+            </ul>
           </div>
           <Link
             href="/basket"

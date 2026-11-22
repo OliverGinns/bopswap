@@ -9,6 +9,7 @@ import {
   completeOffers,
   gbp,
   isActive,
+  needsPayment,
   offerDetail,
   offerWhen,
   retractOffer,
@@ -22,6 +23,8 @@ import { useListings } from "@/lib/useListings";
 import { useWardrobe } from "@/lib/useWardrobe";
 import { WardrobeItem } from "@/lib/wardrobe";
 import MapLoader from "./MapLoader";
+import PaySheet from "./PaySheet";
+import RatingBadge from "./RatingBadge";
 import WardrobeThumb from "./WardrobeThumb";
 
 const STATUS_STYLE: Record<OfferStatus, { label: string; chip: string }> = {
@@ -44,7 +47,7 @@ export default function BasketClient() {
   const { items: wardrobe } = useWardrobe();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<Offer | null>(null);
-  const [success, setSuccess] = useState<{ parcels: number; items: number } | null>(null);
+  const [payingId, setPayingId] = useState<string | null>(null);
 
   const active = useMemo(() => offers.filter(isActive), [offers]);
   const mapListings = useMemo(
@@ -67,10 +70,20 @@ export default function BasketClient() {
     if (selectedId && !mapListings.some((l) => l.id === selectedId)) queueMicrotask(() => setSelectedId(null));
   }, [selectedId, mapListings]);
 
-  const confirmAll = () => {
-    const ids = active.map((o) => o.id);
-    setSuccess({ parcels: toCollect, items: ids.length });
-    completeOffers(ids);
+  // Progress counts everything that is not retracted; "sorted" = handed over.
+  const sortedCount = offers.filter((o) => o.status === "completed").length;
+  const totalCount = offers.filter((o) => o.status !== "retracted").length;
+  const parcelsAvoided = offers.filter((o) => o.status === "completed" && o.type !== "online").length;
+  const payingOffer = payingId ? offers.find((o) => o.id === payingId && isActive(o)) : undefined;
+
+  const confirmOffer = (o: Offer) => {
+    const l = byId(o.listingId);
+    completeOffers([o.id]);
+    toast(
+      o.type === "online"
+        ? `Marked received: ${l?.title ?? "your order"}.`
+        : `${o.type === "swap" ? "Swap" : "Handover"} confirmed${l ? `: ${l.title}` : ""}. Parcel avoided 🌱`
+    );
   };
 
   const doRetract = () => {
@@ -80,8 +93,6 @@ export default function BasketClient() {
     toast(`Offer retracted${l ? ` for ${l.title}` : ""}. The map's updated.`);
     setConfirming(null);
   };
-
-  if (success) return <SuccessScreen parcels={success.parcels} items={success.items} />;
 
   // Nothing but retracted offers (or none at all) -> friendly empty state.
   const empty = ready && !offers.some((o) => o.status !== "retracted");
@@ -112,6 +123,8 @@ export default function BasketClient() {
                         listing={byId(o.listingId)}
                         wardrobeItem={wardrobe.find((w) => w.id === o.swapWardrobeItemId)}
                         onRetract={() => setConfirming(o)}
+                        onPay={() => setPayingId(o.id)}
+                        onConfirm={() => confirmOffer(o)}
                         onShow={() => setSelectedId(o.listingId)}
                         selected={selectedId === o.listingId}
                       />
@@ -133,13 +146,7 @@ export default function BasketClient() {
               {deliveries > 0 && (
                 <p className="mt-2 text-xs text-stone">+ {deliveries} online order{deliveries === 1 ? "" : "s"} shipping separately.</p>
               )}
-              <button
-                onClick={confirmAll}
-                disabled={active.length === 0}
-                className="font-display pop mt-4 w-full rounded-full border-2 border-ink bg-forest py-3 text-base font-bold text-cream shadow-pop-sm disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Confirm all handovers
-              </button>
+              <Progress sorted={sortedCount} total={totalCount} parcels={parcelsAvoided} />
               <p className="mt-2 text-center text-xs text-stone">Demo only: nothing is sent or charged.</p>
             </div>
 
@@ -160,6 +167,8 @@ export default function BasketClient() {
           </aside>
         </div>
       )}
+
+      {payingOffer && <PaySheet offer={payingOffer} listing={byId(payingOffer.listingId)} onClose={() => setPayingId(null)} />}
 
       {confirming && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70 p-4" onClick={() => setConfirming(null)}>
@@ -194,6 +203,8 @@ function OfferRow({
   listing: l,
   wardrobeItem,
   onRetract,
+  onPay,
+  onConfirm,
   onShow,
   selected,
 }: {
@@ -201,6 +212,8 @@ function OfferRow({
   listing: Listing | undefined;
   wardrobeItem: WardrobeItem | undefined;
   onRetract: () => void;
+  onPay: () => void;
+  onConfirm: () => void;
   onShow: () => void;
   selected: boolean;
 }) {
@@ -228,15 +241,19 @@ function OfferRow({
           <h3 className="font-display min-w-0 truncate text-base font-semibold">{l?.title ?? "Listing"}</h3>
           <span className={`shrink-0 rounded-full border border-ink px-2 py-0.5 text-[11px] font-bold ${st.chip}`}>{st.label}</span>
         </div>
-        <p className="text-xs text-stone">
-          {TYPE_LABEL[o.type]} · {l ? (l.sellerType === "charity" ? `💚 ${l.sellerName}` : l.sellerName) : "Seller"}
-          {l?.college ? ` · ${l.college}` : ""}
+        <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-stone">
+          <span>
+            {TYPE_LABEL[o.type]} · {l ? (l.sellerType === "charity" ? `💚 ${l.sellerName}` : l.sellerName) : "Seller"}
+            {l?.college ? ` · ${l.college}` : ""}
+          </span>
+          {l && <RatingBadge listing={l} />}
         </p>
-        <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
+        <div className="mt-1 flex items-center gap-2 text-sm font-semibold">
           {o.type === "swap" && wardrobeItem && <WardrobeThumb item={wardrobeItem} className="h-6 w-6 shrink-0 rounded-full border border-ink text-xs" />}
           <span className="min-w-0 truncate">{offerDetail(o, l, wardrobeItem)}</span>
-        </p>
+        </div>
         <p className="text-xs font-semibold text-forest">🕒 {offerWhen(o, l)}</p>
+        <Steps offer={o} onPay={onPay} onConfirm={onConfirm} />
         {isActive(o) && (
           <div className="mt-2 flex gap-3 text-xs font-bold">
             <button onClick={onRetract} className="text-coral underline-offset-2 hover:underline">
@@ -256,6 +273,75 @@ function OfferRow({
         )}
       </div>
     </li>
+  );
+}
+
+const stepBtn = "font-display pop rounded-full border-2 border-ink px-4 py-1.5 text-sm font-bold shadow-pop-sm";
+
+/** Per-offer next step: Pay, then Paid + Confirm handover. Swaps just Confirm swap. Then Completed. */
+function Steps({ offer: o, onPay, onConfirm }: { offer: Offer; onPay: () => void; onConfirm: () => void }) {
+  if (o.status === "completed") {
+    return (
+      <p className="mt-2 text-sm font-bold text-forest">
+        {o.type === "online" ? "📦 Order received" : "Parcel avoided 🌱"}
+        {o.paid && <span className="ml-2 text-xs font-semibold text-stone">Paid ✓</span>}
+      </p>
+    );
+  }
+  if (o.status !== "accepted") return null;
+  const pay = needsPayment(o);
+  const confirmLabel = o.type === "online" ? "Mark received" : o.type === "swap" || !pay ? "Confirm swap" : "Confirm handover";
+  return (
+    <div className="mt-2 flex flex-wrap items-center gap-2">
+      {pay && !o.paid && (
+        <button onClick={onPay} className={`${stepBtn} bg-mustard text-ink`}>
+          Pay {gbp(o.amount)}
+        </button>
+      )}
+      {pay && o.paid && (
+        <span className="rounded-full border border-ink bg-sage px-2.5 py-1 text-xs font-bold text-forest">Paid ✓</span>
+      )}
+      {(!pay || o.paid) && (
+        <button onClick={onConfirm} className={`${stepBtn} bg-forest text-cream`}>
+          {confirmLabel}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function Progress({ sorted, total, parcels }: { sorted: number; total: number; parcels: number }) {
+  const pct = total ? Math.round((sorted / total) * 100) : 0;
+  const allDone = total > 0 && sorted === total;
+  return (
+    <div className="mt-4">
+      <div className="flex items-baseline justify-between">
+        <p className="font-display text-base font-bold">
+          {sorted} of {total} sorted
+        </p>
+        <p className="text-xs font-semibold text-stone">{pct}%</p>
+      </div>
+      <div
+        role="progressbar"
+        aria-valuemin={0}
+        aria-valuemax={total}
+        aria-valuenow={sorted}
+        aria-label="Items sorted"
+        className="mt-1.5 h-3 overflow-hidden rounded-full border-2 border-ink bg-canvas"
+      >
+        <div className="h-full bg-leaf transition-all duration-500" style={{ width: `${pct}%` }} />
+      </div>
+      {allDone ? (
+        <p className="mt-3 rounded-2xl border-2 border-ink bg-sage p-3 text-center text-sm font-bold text-forest">
+          🎉 All sorted! {parcels} parcel{parcels === 1 ? "" : "s"} avoided 🌱{" "}
+          <Link href="/profile" className="underline underline-offset-2">
+            See your impact
+          </Link>
+        </p>
+      ) : (
+        <p className="mt-1.5 text-xs text-stone">Pay and confirm each item as you collect it.</p>
+      )}
+    </div>
   );
 }
 
@@ -286,31 +372,6 @@ function EmptyState() {
       <Link href="/plan" className="font-display pop mt-5 inline-block rounded-full border-2 border-ink bg-mustard px-6 py-2.5 font-bold shadow-pop-sm">
         Plan an outfit →
       </Link>
-    </div>
-  );
-}
-
-function SuccessScreen({ parcels, items }: { parcels: number; items: number }) {
-  return (
-    <div className="mx-auto w-full max-w-lg px-4 py-16 text-center">
-      <div className="rounded-3xl border-2 border-ink bg-cream p-10 shadow-pop">
-        <p className="text-7xl">🎉</p>
-        <h1 className="font-display mt-3 text-3xl font-bold">All handovers confirmed!</h1>
-        <p className="font-display mt-4 text-4xl font-bold text-forest">
-          {parcels} parcel{parcels === 1 ? "" : "s"} avoided 🌱
-        </p>
-        <p className="mt-3 text-ink/75">
-          {items} item{items === 1 ? "" : "s"} sorted. Enjoy the bop, you&apos;ll look great.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/profile" className="font-display pop rounded-full border-2 border-ink bg-forest px-5 py-2.5 font-semibold text-cream shadow-pop-sm">
-            See your impact
-          </Link>
-          <Link href="/plan" className="font-display pop rounded-full border-2 border-ink bg-mustard px-5 py-2.5 font-semibold shadow-pop-sm">
-            Plan another outfit
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

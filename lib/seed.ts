@@ -206,3 +206,52 @@ export function formatPrice(p: "swap" | number): string {
 
 /** Map pin colour: charity shops green, student listings pink. */
 export const PIN_COLOUR: Record<SellerType, string> = { student: "#E8745A", charity: "#2F5D3A" };
+
+// ---------- Ratings (fixed, fictional demo data) ----------
+
+export interface Rating {
+  rating: number;
+  count: number;
+  /** What the count counts: "swaps" for students, "sales" for online sellers, "pickups" for charity shops. */
+  unit: string;
+}
+
+const r = (rating: number, count: number): [number, number] => [rating, count];
+
+/** Student sellers, keyed by name. */
+const STUDENT_RATINGS: Record<string, [number, number]> = {
+  "Aisha Rahman": r(4.9, 31), "Archie Pemberton": r(4.6, 12), "Bella Rossi": r(4.8, 23), "Ben Okafor": r(4.7, 18),
+  "Callum Reid": r(4.5, 9), "Chloe Banerjee": r(5.0, 14), "Daniel Foster": r(4.6, 21), "Eleanor Voss": r(4.9, 27),
+  "Erik Solberg": r(4.4, 7), "Fern Whitaker": r(4.8, 16), "Freya Lindqvist": r(4.7, 25), "Gabe Lindholm": r(4.5, 11),
+  "Hannah Doyle": r(4.9, 34), "Imogen Clarke": r(4.8, 19), "Jess Calloway": r(4.6, 13), "Jordan Mensah": r(4.7, 22),
+  "Leila Haddad": r(5.0, 8), "Liam Gallagher-Smith": r(4.4, 6), "Marcus Aurelio-Jones": r(4.5, 10), "Maya Patel": r(4.8, 29),
+  "Nadia Kowalski": r(4.9, 17), "Oscar Bellamy": r(4.6, 15), "Priya Nair": r(4.9, 26), "Rohan Desai": r(4.7, 20),
+  "Ruby Thornton": r(4.8, 24), "Sam Hartley": r(4.5, 12), "Sophie Wang": r(4.9, 30), "Tilly Grant": r(4.7, 14),
+  "Tom Whitfield": r(4.6, 18), "Zara Ahmed": r(4.8, 21),
+};
+
+/** Online sellers (Vinted / Amazon / Facebook), keyed by name. */
+const ONLINE_RATINGS: Record<string, [number, number]> = {
+  ClipCo: r(4.6, 412), CostumeKing: r(4.5, 268), PartyHeaven: r(4.4, 190), RetroRaves: r(4.7, 321),
+  "Marketplace seller": r(4.5, 38), vinted_denimqueen: r(4.9, 87), vinted_goldie: r(4.8, 64),
+  vinted_retrofits: r(4.7, 143), vinted_seller_92: r(4.5, 29),
+};
+
+/** Charity shops, keyed by shop name. */
+const SHOP_RATINGS: Record<string, [number, number]> = {
+  [SHOPS.cowley.name]: r(4.8, 142), [SHOPS.summertown.name]: r(4.9, 207),
+  [SHOPS.jericho.name]: r(4.7, 96), [SHOPS.stClements.name]: r(4.8, 118),
+};
+
+/** The demo user's own rating (shown on /profile). */
+export const USER_RATING: Rating = { rating: 4.9, count: 14, unit: "swaps" };
+
+/** Fixed rating for a seller. Unknown names (e.g. user uploads) get a stable value in 4.4-5.0. */
+export function ratingFor(l: Pick<Listing, "sellerName" | "sellerType" | "external">): Rating {
+  const hit = l.external ? ONLINE_RATINGS[l.sellerName] : l.sellerType === "charity" ? SHOP_RATINGS[l.sellerName] : STUDENT_RATINGS[l.sellerName];
+  const unit = l.external ? "sales" : l.sellerType === "charity" ? "pickups" : "swaps";
+  if (hit) return { rating: hit[0], count: hit[1], unit };
+  let h = 11;
+  for (let i = 0; i < l.sellerName.length; i++) h = (h * 31 + l.sellerName.charCodeAt(i)) >>> 0;
+  return { rating: Math.round((4.4 + (h % 7) / 10) * 10) / 10, count: 5 + (h % 20), unit };
+}

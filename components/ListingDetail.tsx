@@ -1,6 +1,7 @@
 import { softFill } from "@/lib/theme";
 import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "@/lib/seed";
 import ListingActions from "./ListingActions";
+import RatingBadge from "./RatingBadge";
 
 export default function ListingDetail({ listing: l }: { listing: Listing }) {
   const d = distanceInfo(l);
@@ -48,7 +49,10 @@ export default function ListingDetail({ listing: l }: { listing: Listing }) {
             </div>
 
             <div className="rounded-2xl border-2 border-ink bg-cream p-4 text-sm">
-              <p className="font-bold">{l.sellerName}</p>
+              <p className="flex flex-wrap items-center gap-2 font-bold">
+                {l.sellerName}
+                <RatingBadge listing={l} />
+              </p>
               {d && l.shop ? (
                 <>
                   <p className="text-ink/75">

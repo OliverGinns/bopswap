@@ -1,6 +1,7 @@
 import { softFill } from "@/lib/theme";
 import Link from "next/link";
 import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "@/lib/seed";
+import RatingBadge from "./RatingBadge";
 
 export default function ListingCard({ listing: l }: { listing: Listing }) {
   const d = distanceInfo(l);
@@ -49,9 +50,12 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
             <p className="text-xs text-ink/75">
               📍 {d.label} · 🚶 {d.walkMins} min walk
             </p>
-            <p className="text-xs text-stone">
-              {l.sellerName}
-              {isCharity ? "" : ` · ${l.college}`}
+            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-stone">
+              <span>
+                {l.sellerName}
+                {isCharity ? "" : ` · ${l.college}`}
+              </span>
+              <RatingBadge listing={l} />
             </p>
             {isCharity ? (
               <span className="mt-auto w-fit rounded-full bg-sage px-2 py-0.5 text-xs font-bold text-forest">
@@ -68,7 +72,12 @@ export default function ListingCard({ listing: l }: { listing: Listing }) {
             <p className="text-xs text-ink/75">
               {formatPrice(l.swapOrPrice)} · 📦 Delivery {l.delivery}
             </p>
-            <p className="text-xs text-stone">External listing · {SOURCE_LABEL[l.source]}</p>
+            <p className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-stone">
+              <span>
+                {l.sellerName} · {SOURCE_LABEL[l.source]}
+              </span>
+              <RatingBadge listing={l} />
+            </p>
           </>
         )}
       </div>

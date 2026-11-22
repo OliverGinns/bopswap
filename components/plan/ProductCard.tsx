@@ -5,6 +5,7 @@ import { Listing, SOURCE_LABEL, distanceInfo, formatPrice } from "@/lib/seed";
 import { sourceKind } from "@/lib/plan";
 import { softFill } from "@/lib/theme";
 import type { Choice } from "./types";
+import RatingBadge from "../RatingBadge";
 
 interface Props {
   l: Listing;
@@ -97,7 +98,11 @@ export default function ProductCard({ l, reason, saved, selected, chosen, onSave
           </Link>
         </div>
         <p className="truncate text-xs text-stone">
-          Size {l.size} · {l.condition} · {l.sellerName}
+          Size {l.size} · {l.condition}
+        </p>
+        <p className="flex items-center gap-1.5 text-xs text-stone">
+          <span className="min-w-0 truncate">{l.sellerName}</span>
+          <RatingBadge listing={l} className="shrink-0" />
         </p>
         <p className="truncate text-xs font-semibold text-ink/75">
           {d ? (

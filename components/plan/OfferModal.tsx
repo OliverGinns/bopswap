@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Listing, formatPrice } from "@/lib/seed";
 import { WardrobeItem, itemEmoji } from "@/lib/wardrobe";
+import RatingBadge from "../RatingBadge";
 
 type Props =
   | { mode: "swap"; listing: Listing; wardrobe: WardrobeItem[]; onClose: () => void; onSwap: (item: WardrobeItem) => void }
@@ -36,7 +37,10 @@ export default function OfferModal(props: Props) {
           <div>
             <h2 className="font-display text-xl font-bold">{props.mode === "swap" ? "Offer a swap" : "Make an offer"}</h2>
             <p className="text-sm text-stone">
-              {l.imageEmoji} {l.title} · listed {formatPrice(l.swapOrPrice)} · {l.sellerName}
+              {l.imageEmoji} {l.title} · listed {formatPrice(l.swapOrPrice)}
+            </p>
+            <p className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-stone">
+              {l.sellerName} <RatingBadge listing={l} />
             </p>
           </div>
           <button onClick={onClose} aria-label="Close" className="rounded-full bg-sage px-3 py-1 text-lg">

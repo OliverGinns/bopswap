@@ -24,6 +24,10 @@ export interface Offer {
   slot?: string;
   /** When the simulated seller replies (pending student offers only). */
   acceptAt?: number;
+  /** Demo payment done (cash / charity / online items). */
+  paid?: boolean;
+  /** Express handover chosen (+£0.50 on paid items). */
+  express?: boolean;
 }
 
 export const isActive = (o: Offer) => o.status === "pending" || o.status === "accepted";
@@ -57,6 +61,8 @@ function clean(raw: unknown): Offer | null {
     createdAt: typeof o.createdAt === "number" ? o.createdAt : Date.now(),
     slot: typeof o.slot === "string" ? o.slot : undefined,
     acceptAt: typeof o.acceptAt === "number" ? o.acceptAt : undefined,
+    paid: o.paid === true ? true : undefined,
+    express: o.express === true ? true : undefined,
   };
 }
 
@@ -117,6 +123,7 @@ export interface NewOffer {
   amount?: number;
   swapWardrobeItemId?: string | null;
   slot?: string;
+  express?: boolean;
 }
 
 /** Student offers get a simulated seller reply 6-10 s later; charity pickups and online orders are confirmed straight away. */
@@ -132,6 +139,7 @@ export function addOffer(input: NewOffer): Offer {
     status: needsReply ? "pending" : "accepted",
     createdAt: now,
     slot: input.slot,
+    express: input.express || undefined,
     acceptAt: needsReply ? now + 6000 + Math.random() * 4000 : undefined,
   };
   // A newer offer on the same listing replaces the older active one.
@@ -162,6 +170,16 @@ export function retractOffer(id: string) {
   patch([id], (o) => (isActive(o) ? { ...o, status: "retracted", acceptAt: undefined } : o));
 }
 
+/** Demo payment succeeded. */
+export function payOffer(id: string) {
+  patch([id], (o) => (isActive(o) ? { ...o, paid: true } : o));
+}
+
+export const EXPRESS_FEE = 0.5;
+
+/** Does this offer need a (demo) payment before the handover? Swaps never do. */
+export const needsPayment = (o: Offer) => o.type !== "swap" && o.amount > 0;
+
 export function completeOffers(ids: string[]) {
   patch(ids, (o) => (isActive(o) ? { ...o, status: "completed", acceptAt: undefined } : o));
 }
@@ -181,6 +199,7 @@ export const gbp = (n: number) => `£${n.toFixed(2).replace(/\.00$/, "")}`;
 export function offerDetail(o: Offer, l: Listing | undefined, w: WardrobeItem | undefined): string {
   switch (o.type) {
     case "cash":
+      if (o.slot) return `Paying ${gbp(o.amount)} incl. fees${o.express ? " · ⚡ express" : ""}`;
       return `Offered ${gbp(o.amount)}${l && typeof l.swapOrPrice === "number" ? ` (listed ${gbp(l.swapOrPrice)})` : ""}`;
     case "swap":
       return `Swap for your ${w ? w.name.toLowerCase() : "wardrobe item"}`;

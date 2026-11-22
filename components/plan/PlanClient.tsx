@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BotReply, Direction, OutfitPiece } from "@/lib/botTypes";
 import { parseBudget, themeById } from "@/lib/directions";
+import { setChosenLook } from "@/lib/lookChoice";
 import { scriptedReply } from "@/lib/scriptedBot";
 import { useListings } from "@/lib/useListings";
 import { useWardrobe } from "@/lib/useWardrobe";
@@ -175,6 +176,7 @@ export default function PlanClient({ initialInput = "", themeId }: { initialInpu
   const pickDirection = useCallback(
     (d: Direction) => {
       setSelectedDirId(d.id);
+      setChosenLook(d.title);
       return send(`Let's go with ${d.title}`);
     },
     [send]
@@ -198,6 +200,7 @@ export default function PlanClient({ initialInput = "", themeId }: { initialInpu
     setLeaving(false);
     setInput("");
     setSelectedDirId(null);
+    setChosenLook(null);
     setPhase("plan");
     commit([GREETING]);
   }, [commit]);

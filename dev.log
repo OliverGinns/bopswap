@@ -36,3 +36,254 @@
  POST /api/chat 200 in 13ms (next.js: 2ms, application-code: 10ms)
  POST /api/chat 200 in 10ms (next.js: 1.8ms, application-code: 8ms)
 ✓ Compiled in 35ms
+ GET /plan 200 in 66ms (next.js: 5ms, application-code: 60ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 63ms (next.js: 21ms, application-code: 42ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 63ms (next.js: 16ms, application-code: 47ms)
+ GET /browse 200 in 38ms (next.js: 3ms, application-code: 35ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 16ms, application-code: 41ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 49ms (next.js: 12ms, application-code: 37ms)
+ GET /wardrobe 200 in 47ms (next.js: 18ms, application-code: 30ms)
+ GET /plan 200 in 21ms (next.js: 1.8ms, application-code: 19ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 64ms (next.js: 16ms, application-code: 48ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 50ms (next.js: 17ms, application-code: 33ms)
+ POST /api/chat 200 in 12ms (next.js: 2ms, application-code: 9ms)
+ POST /api/chat 200 in 22ms (next.js: 2ms, application-code: 20ms)
+ GET /profile 200 in 61ms (next.js: 22ms, application-code: 39ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 67ms (next.js: 23ms, application-code: 45ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 61ms (next.js: 17ms, application-code: 44ms)
+ GET /basket 200 in 258ms (next.js: 116ms, application-code: 143ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 153ms (next.js: 44ms, application-code: 108ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 14ms, application-code: 42ms)
+ GET /plan 200 in 33ms (next.js: 3ms, application-code: 30ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 128ms (next.js: 52ms, application-code: 77ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 63ms (next.js: 18ms, application-code: 45ms)
+ GET / 200 in 78ms (next.js: 14ms, application-code: 64ms)
+ GET / 200 in 41ms (next.js: 1.8ms, application-code: 39ms)
+ GET /basket 200 in 90ms (next.js: 2.0ms, application-code: 88ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 51ms (next.js: 17ms, application-code: 34ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 44ms (next.js: 13ms, application-code: 31ms)
+ GET / 200 in 39ms (next.js: 2ms, application-code: 36ms)
+ GET /basket 200 in 36ms (next.js: 1.6ms, application-code: 34ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 42ms (next.js: 13ms, application-code: 29ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 40ms (next.js: 12ms, application-code: 28ms)
+ GET / 200 in 36ms (next.js: 1.8ms, application-code: 34ms)
+ GET /basket 200 in 35ms (next.js: 1.8ms, application-code: 34ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 15ms, application-code: 28ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 44ms (next.js: 13ms, application-code: 31ms)
+ GET / 200 in 31ms (next.js: 1.6ms, application-code: 29ms)
+ GET /basket 200 in 33ms (next.js: 1.6ms, application-code: 31ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 59ms (next.js: 16ms, application-code: 43ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 15ms, application-code: 28ms)
+ GET / 200 in 33ms (next.js: 2ms, application-code: 31ms)
+ GET /basket 200 in 36ms (next.js: 1.6ms, application-code: 35ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 45ms (next.js: 13ms, application-code: 33ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 53ms (next.js: 19ms, application-code: 34ms)
+[browser] In HTML, <div> cannot be a descendant of <p>.
+This will cause a hydration error.
+
+  ...
+    <InnerLayoutRouter url="/basket" tree={[...]} params={{}} renderTree={{...}} segmentPath={[...]} ...>
+      <SegmentViewNode type="page" pagePath="basket/pag...">
+        <SegmentTrieNode>
+        <BasketPage>
+          <Header>
+          <main className="flex-1 bg-...">
+            <BasketClient>
+              <div className="mx-auto w-...">
+                <h1>
+                <p>
+                <div className="mt-5 grid ...">
+                  <div className="space-y-6">
+                    <section aria-label="Accepted">
+                      <h2>
+                      <ul className="space-y-3">
+                        <OfferRow offer={{id:"a", ...}} listing={{id:"l05", ...}} wardrobeItem={{id:"w01", ...}} ...>
+                          <li className={"flex gap..."}>
+                            <div>
+                            <div className="min-w-0 fl...">
+                              <div>
+                              <p>
+>                             <p className="mt-1 flex items-center gap-2 text-sm font-semibold">
+                                <WardrobeThumb item={{id:"w01", ...}} className="h-6 w-6 sh...">
+>                                 <div
+>                                   className="relative flex items-center justify-center overflow-hidden h-6 w-6 shrin..."
+>                                   style={{background:"#F3DFA2"}}
+>                                 >
+                                ...
+                              ...
+                  ...
+      ...
+ 
+[browser] <p> cannot contain a nested <div>.
+See this log for the ancestor stack trace. 
+ GET / 200 in 58ms (next.js: 3ms, application-code: 55ms)
+ GET /basket 200 in 49ms (next.js: 2ms, application-code: 47ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 54ms (next.js: 15ms, application-code: 39ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 44ms (next.js: 15ms, application-code: 29ms)
+ GET / 200 in 57ms (next.js: 2.0ms, application-code: 55ms)
+ GET /basket 200 in 61ms (next.js: 3ms, application-code: 58ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 66ms (next.js: 15ms, application-code: 51ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 65ms (next.js: 28ms, application-code: 37ms)
+ GET / 200 in 51ms (next.js: 2ms, application-code: 49ms)
+ GET /basket 200 in 52ms (next.js: 2.0ms, application-code: 50ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 49ms (next.js: 13ms, application-code: 36ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 51ms (next.js: 14ms, application-code: 37ms)
+ GET / 200 in 60ms (next.js: 3ms, application-code: 58ms)
+ GET /basket 200 in 53ms (next.js: 2.0ms, application-code: 51ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 68ms (next.js: 21ms, application-code: 47ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 55ms (next.js: 17ms, application-code: 39ms)
+ GET / 200 in 45ms (next.js: 2ms, application-code: 43ms)
+ GET /plan 200 in 70ms (next.js: 3ms, application-code: 67ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 57ms (next.js: 16ms, application-code: 41ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 44ms (next.js: 15ms, application-code: 29ms)
+ GET /basket 200 in 27ms (next.js: 2ms, application-code: 25ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 54ms (next.js: 14ms, application-code: 39ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 54ms (next.js: 12ms, application-code: 42ms)
+ GET /browse 200 in 54ms (next.js: 2ms, application-code: 51ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 46ms (next.js: 12ms, application-code: 34ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 14ms, application-code: 28ms)
+ GET /basket 200 in 22ms (next.js: 2ms, application-code: 20ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 47ms (next.js: 12ms, application-code: 36ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 55ms (next.js: 16ms, application-code: 39ms)
+ GET /listing/l03 200 in 1094ms (next.js: 28ms, generate-params: 1005ms, application-code: 61ms)
+ GET /basket 200 in 49ms (next.js: 5ms, application-code: 45ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 97ms (next.js: 35ms, application-code: 62ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 72ms (next.js: 27ms, application-code: 44ms)
+ GET /profile 200 in 63ms (next.js: 3ms, application-code: 60ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 111ms (next.js: 34ms, application-code: 77ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 89ms (next.js: 26ms, application-code: 62ms)
+ GET /basket 200 in 26ms (next.js: 3ms, application-code: 23ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 55ms (next.js: 14ms, application-code: 41ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 15ms, application-code: 41ms)
+ GET / 200 in 46ms (next.js: 2ms, application-code: 44ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 100ms (next.js: 36ms, application-code: 64ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 73ms (next.js: 25ms, application-code: 48ms)
+ GET /basket 200 in 26ms (next.js: 4ms, application-code: 22ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 62ms (next.js: 17ms, application-code: 46ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 74ms (next.js: 18ms, application-code: 56ms)
+✓ Compiled in 120ms
+✓ Compiled in 84ms
+ GET /plan 200 in 47ms (next.js: 7ms, application-code: 39ms)
+✓ Compiled in 35ms
+ GET /plan 200 in 37ms (next.js: 4ms, application-code: 33ms)
+✓ Compiled in 57ms
+✓ Compiled in 79ms
+✓ Compiled in 39ms
+✓ Compiled in 68ms
+ GET / 200 in 37ms (next.js: 6ms, application-code: 32ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 92ms (next.js: 36ms, application-code: 56ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 66ms (next.js: 24ms, application-code: 42ms)
+✓ Compiled in 40ms
+✓ Compiled in 44ms
+ GET / 200 in 39ms (next.js: 7ms, application-code: 32ms)
+✓ Compiled in 89ms
+✓ Compiled in 48ms
+ GET /basket 200 in 61ms (next.js: 6ms, application-code: 54ms)
+ GET / 200 in 64ms (next.js: 3ms, application-code: 61ms)
+ GET /listing/l01 200 in 123ms (next.js: 17ms, generate-params: 13ms, application-code: 94ms)
+ GET /listing/l02 200 in 66ms (next.js: 3ms, generate-params: 8ms, application-code: 55ms)
+ GET /listing/c01 200 in 60ms (next.js: 1.5ms, generate-params: 6ms, application-code: 52ms)
+ GET /basket 200 in 32ms (next.js: 1.6ms, application-code: 31ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 84ms (next.js: 36ms, application-code: 48ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 53ms (next.js: 16ms, application-code: 37ms)
+ GET /profile 200 in 48ms (next.js: 5ms, application-code: 43ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 60ms (next.js: 16ms, application-code: 44ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 58ms (next.js: 16ms, application-code: 42ms)
+ GET /browse 200 in 101ms (next.js: 5ms, application-code: 96ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 15ms, application-code: 41ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 42ms (next.js: 13ms, application-code: 29ms)
+ GET /listing/l03 200 in 68ms (next.js: 3ms, generate-params: 9ms, application-code: 57ms)
+ GET /listing/c01 200 in 75ms (next.js: 2ms, generate-params: 8ms, application-code: 65ms)
+ GET /listing/e01 200 in 53ms (next.js: 1.7ms, generate-params: 6ms, application-code: 46ms)
+ GET /plan?q=90s%20bop 200 in 84ms (next.js: 3ms, application-code: 81ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 59ms (next.js: 14ms, application-code: 45ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 54ms (next.js: 14ms, application-code: 40ms)
+ GET / 200 in 62ms (next.js: 2ms, application-code: 60ms)
+ GET /plan?q=90s%20bop%20tonight 200 in 70ms (next.js: 2ms, application-code: 68ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 39ms (next.js: 13ms, application-code: 26ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 39ms (next.js: 10ms, application-code: 29ms)
+ GET / 200 in 55ms (next.js: 2ms, application-code: 52ms)
+ GET /plan 200 in 66ms (next.js: 1.7ms, application-code: 64ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 51ms (next.js: 12ms, application-code: 39ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 53ms (next.js: 15ms, application-code: 38ms)
+ POST /api/chat 200 in 37ms (next.js: 7ms, application-code: 30ms)
+ GET / 200 in 54ms (next.js: 2ms, application-code: 52ms)
+ GET /plan 200 in 66ms (next.js: 3ms, application-code: 64ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 68ms (next.js: 21ms, application-code: 47ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 61ms (next.js: 17ms, application-code: 43ms)
+ POST /api/chat 200 in 15ms (next.js: 3ms, application-code: 12ms)
+ POST /api/chat 200 in 13ms (next.js: 1.8ms, application-code: 11ms)
+ GET / 200 in 52ms (next.js: 2ms, application-code: 50ms)
+ GET /plan 200 in 60ms (next.js: 2ms, application-code: 58ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 49ms (next.js: 12ms, application-code: 38ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 51ms (next.js: 14ms, application-code: 37ms)
+ POST /api/chat 200 in 13ms (next.js: 1.5ms, application-code: 11ms)
+ POST /api/chat 200 in 11ms (next.js: 1.7ms, application-code: 9ms)
+ GET / 200 in 60ms (next.js: 3ms, application-code: 57ms)
+ GET /plan 200 in 82ms (next.js: 3ms, application-code: 79ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 69ms (next.js: 18ms, application-code: 51ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 68ms (next.js: 17ms, application-code: 50ms)
+ POST /api/chat 200 in 13ms (next.js: 1.6ms, application-code: 12ms)
+ POST /api/chat 200 in 10ms (next.js: 1.5ms, application-code: 9ms)
+ GET / 200 in 47ms (next.js: 2ms, application-code: 45ms)
+ GET /plan 200 in 70ms (next.js: 2ms, application-code: 68ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 62ms (next.js: 18ms, application-code: 43ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 15ms, application-code: 41ms)
+ POST /api/chat 200 in 11ms (next.js: 3ms, application-code: 9ms)
+ POST /api/chat 200 in 14ms (next.js: 2ms, application-code: 12ms)
+ GET / 200 in 50ms (next.js: 2ms, application-code: 47ms)
+ GET /plan 200 in 59ms (next.js: 2ms, application-code: 57ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 58ms (next.js: 17ms, application-code: 40ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 58ms (next.js: 13ms, application-code: 45ms)
+ POST /api/chat 200 in 12ms (next.js: 1.7ms, application-code: 10ms)
+ POST /api/chat 200 in 9ms (next.js: 1.6ms, application-code: 8ms)
+ GET / 200 in 58ms (next.js: 3ms, application-code: 56ms)
+ GET /plan 200 in 77ms (next.js: 2ms, application-code: 74ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 50ms (next.js: 14ms, application-code: 36ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 41ms (next.js: 14ms, application-code: 27ms)
+ POST /api/chat 200 in 14ms (next.js: 1.6ms, application-code: 13ms)
+ POST /api/chat 200 in 10ms (next.js: 1.5ms, application-code: 9ms)
+ GET / 200 in 53ms (next.js: 3ms, application-code: 50ms)
+ GET /plan 200 in 60ms (next.js: 2ms, application-code: 58ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 51ms (next.js: 15ms, application-code: 36ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 50ms (next.js: 12ms, application-code: 38ms)
+ POST /api/chat 200 in 11ms (next.js: 1.9ms, application-code: 9ms)
+ POST /api/chat 200 in 11ms (next.js: 1.5ms, application-code: 9ms)
+ GET / 200 in 53ms (next.js: 2ms, application-code: 51ms)
+ GET /plan 200 in 90ms (next.js: 3ms, application-code: 87ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 59ms (next.js: 18ms, application-code: 42ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 60ms (next.js: 17ms, application-code: 43ms)
+ POST /api/chat 200 in 15ms (next.js: 3ms, application-code: 12ms)
+ POST /api/chat 200 in 11ms (next.js: 2ms, application-code: 9ms)
+ GET / 200 in 56ms (next.js: 2ms, application-code: 53ms)
+ GET /plan 200 in 63ms (next.js: 3ms, application-code: 61ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 56ms (next.js: 14ms, application-code: 42ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 45ms (next.js: 14ms, application-code: 31ms)
+ POST /api/chat 200 in 10ms (next.js: 2ms, application-code: 8ms)
+ POST /api/chat 200 in 11ms (next.js: 1.6ms, application-code: 9ms)
+✓ Compiled in 464ms
+ GET / 200 in 56ms (next.js: 8ms, application-code: 47ms)
+ GET / 200 in 35ms (next.js: 1.5ms, application-code: 33ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 46ms (next.js: 17ms, application-code: 29ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 41ms (next.js: 12ms, application-code: 28ms)
+ GET / 200 in 40ms (next.js: 2ms, application-code: 38ms)
+ GET / 200 in 37ms (next.js: 2ms, application-code: 35ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 44ms (next.js: 15ms, application-code: 29ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 46ms (next.js: 13ms, application-code: 33ms)
+ GET / 200 in 31ms (next.js: 1.4ms, application-code: 29ms)
+ GET / 200 in 39ms (next.js: 1.5ms, application-code: 38ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 15ms, application-code: 28ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 46ms (next.js: 13ms, application-code: 33ms)
+ GET / 200 in 30ms (next.js: 1.4ms, application-code: 28ms)
+ GET / 200 in 33ms (next.js: 1.6ms, application-code: 31ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 14ms, application-code: 29ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 11ms, application-code: 32ms)
+ GET / 200 in 29ms (next.js: 1.3ms, application-code: 28ms)
+ GET /plan 200 in 49ms (next.js: 4ms, application-code: 45ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 43ms (next.js: 11ms, application-code: 32ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 38ms (next.js: 11ms, application-code: 27ms)
+ POST /api/chat 200 in 11ms (next.js: 2.0ms, application-code: 9ms)
+ POST /api/chat 200 in 11ms (next.js: 1.6ms, application-code: 9ms)
+ GET / 200 in 33ms (next.js: 1.7ms, application-code: 31ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 40ms (next.js: 12ms, application-code: 27ms)
+ GET /NEXT_PUBLIC_SUPABASE_URL=https:/kufoaugdsdlsrrvbbpqj.supabase.co/rest/v1/listings?select=*&order=created_at.desc&limit=100 404 in 50ms (next.js: 14ms, application-code: 36ms)
