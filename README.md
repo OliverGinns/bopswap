@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BopSwap 🪩
 
-## Getting Started
+**Swap it. Wear it. Same day.** Student-to-student and charity-shop clothes swapping with same-day, in-person handover, plus **BopBot**, an outfit planner for events.
 
-First, run the development server:
+**Live demo:** https://bopswap-chi.vercel.app/ · **2-min video:** [VIDEO_PLACEHOLDER]
+
+## Try it in 60 seconds
+
+1. **Home** → pick **College bop – 90s**.
+2. Choose a look → **Find my pieces**.
+3. Make an offer on a few items.
+4. Open the **Basket** → confirm handovers.
+5. Also poke around: **Wardrobe**, **Sell**, **Profile**.
+
+## The problem
+
+Buying second-hand online means parcels, waiting days, shipping costs and returns, which is a poor fit when you need an outfit for Friday's bop. Students end up buying cheap one-wear costumes, and good clothes sit unworn in wardrobes. Local charity shops hold plenty of suitable stock, but students rarely think to check it.
+
+**Who it affects:** students who need event outfits fast and cheaply, and local charity shops that want more footfall for their stock.
+
+## What it does
+
+- **Outfit planner (BopBot):** say the event ("College bop, 90s theme") and get a few looks to choose from, then refine them in chat.
+- **Wardrobe-aware matching:** looks are checked against what you already own, so you only look for the missing pieces.
+- **Local map:** matching items are shown on a map with walking distance, so everything is collectable the same day.
+- **Offers and swaps:** make an offer on an item, then confirm the handover from your basket.
+- **Charity shops:** their stock appears alongside student listings.
+- **Sell from your wardrobe:** list items you already own. With an API key, AI autofill can suggest the listing details from a photo.
+
+## Business model and impact
+
+- Free to list. Charity shops list free.
+- A small fee on swaps and sales (**assumed 5%**, labelled as an assumption in the UI).
+- Paid **express handover** (within the hour, +£0.50).
+- **Impact:** parcels avoided (everything is handed over locally) and more clothes reused instead of bought new for one night.
+
+## Run it locally (zero config)
 
 ```bash
+git clone https://github.com/OliverGinns/bopswap.git
+cd bopswap
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+With no keys set, BopBot runs in **scripted** mode and uploaded listings are saved in **localStorage**. To enable the optional extras, copy `env.example` to `.env.local`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose |
+| --- | --- |
+| `ANTHROPIC_API_KEY` | Enables the optional live Claude BopBot mode (and AI autofill on Sell); not enabled or fully tested for the demo. Server-side only. |
+| `BOPBOT_MODE` | `live`, `scripted` or `auto` (default: live if a key is set, otherwise scripted). |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL, so listings are stored there instead of localStorage. |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key. |
 
-## Learn More
+For Supabase, run [`supabase/schema.sql`](supabase/schema.sql) in the SQL editor.
 
-To learn more about Next.js, take a look at the following resources:
+## What's real vs sample data
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Being upfront:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Sample data:** the listings, the charity shops (**fictional names**, no real partnerships) and the external Vinted / Amazon / Facebook items are all seeded in [`lib/seed.ts`](lib/seed.ts).
+- **Simulated:** offers and handovers are not sent to anyone. There is no sign-in.
+- **Simple rules:** the refinement chat uses simple rules, not a model.
+- **BopBot:** in this deployed prototype, BopBot's replies are **scripted** so the demo is repeatable. A live Claude mode (`claude-haiku-5-5`, with a scripted fallback) is built into the code and is enabled by setting `ANTHROPIC_API_KEY`, but it was **not enabled or fully tested** for the hackathon demo.
+- **Real:** the app itself, the planner and wardrobe matching flow, the map, and listing uploads (localStorage, or Supabase if configured).
 
-## Deploy on Vercel
+## Tech and AI tools
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Next.js (App Router, TypeScript), Tailwind CSS, Supabase, Leaflet + OpenStreetMap and Vercel. In the deployed prototype BopBot's replies are scripted so the demo is repeatable; an optional live Claude mode (`claude-haiku-5-5`, scripted fallback) is built in via `ANTHROPIC_API_KEY` but was not enabled or fully tested for the hackathon demo. **Claude Code** was used to build the project. Built during the hackathon.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Roadmap
+
+- Real university-email sign-in and verification
+- Safe public meetup spots for handovers
+- Real charity-shop partnerships and stock feeds
+- Partner APIs for external marketplaces
+- Better ranking of matches
+- Notifications
+- College-by-college rollout
+
+## Team
+
+Team BopSwap: Ollie, Jamie, Melissa and Danny
